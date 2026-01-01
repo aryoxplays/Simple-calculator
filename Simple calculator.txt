@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ماشین حساب ساده</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            padding: 25px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        header h1 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        header .subtitle {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        .calculator {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+        }
+
+        .display {
+            background: #2c3e50;
+            color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: left;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            word-break: break-all;
+            overflow: hidden;
+        }
+
+        .previous-operand {
+            font-size: 1rem;
+            color: #bdc3c7;
+            min-height: 24px;
+        }
+
+        .current-operand {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            padding: 15px 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .number {
+            background-color: #ffffff;
+            color: #2c3e50;
+            border: 2px solid #e0e0e0;
+        }
+
+        .zero {
+            grid-column: span 2;
+        }
+
+        .operator {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .equals {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .history {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .history h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        #history-list {
+            max-height: 150px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .history-item {
+            padding: 6px 0;
+            border-bottom: 1px dashed #e0e0e0;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .btn-clear-history {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            width: 100%;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .instructions {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .instructions h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .instructions ul {
+            padding-right: 20px;
+            margin-bottom: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        footer {
+            text-align: center;
+            padding-top: 15px;
+            border-top: 2px solid #f0f0f0;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .buttons {
+                gap: 10px;
+            }
+            
+            .btn {
+                padding: 12px 5px;
+                font-size: 1.1rem;
+            }
+            
+            header h1 {
+                font-size: 1.6rem;
+            }
+            
+            .current-operand {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> ماشین حساب ساده</h1>
+            <p class="subtitle">ساخته شده با HTML، CSS و JavaScript</p>
+        </header>
+
+        <main>
+            <div class="calculator">
+                <div class="display">
+                    <div class="previous-operand" id="previous-operand"></div>
+                    <div class="current-operand" id="current-operand">0</div>
+                </div>
+                
+                <div class="buttons">
+                    <button class="btn operator" data-action="clear">C</button>
+                    <button class="btn operator" data-action="backspace"><i class="fas fa-backspace"></i></button>
+                    <button class="btn operator" data-action="percentage">%</button>
+                    <button class="btn operator" data-action="divide">÷</button>
+                    
+                    <button class="btn number" data-number="7">7</button>
+                    <button class="btn number" data-number="8">8</button>
+                    <button class="btn number" data-number="9">9</button>
+                    <button class="btn operator" data-action="multiply">×</button>
+                    
+                    <button class="btn number" data-number="4">4</button>
+                    <button class="btn number" data-number="5">5</button>
+                    <button class="btn number" data-number="6">6</button>
+                    <button class="btn operator" data-action="subtract">−</button>
+                    
+                    <button class="btn number" data-number="1">1</button>
+                    <button class="btn number" data-number="2">2</button>
+                    <button class="btn number" data-number="3">3</button>
+                    <button class="btn operator" data-action="add">+</button>
+                    
+                    <button class="btn number zero" data-number="0">0</button>
+                    <button class="btn number" data-number=".">.</button>
+                    <button class="btn equals" data-action="equals">=</button>
+                </div>
+                
+                <div class="history">
+                    <h3><i class="fas fa-history"></i> تاریخچه عملیات</h3>
+                    <div id="history-list">هیچ عملیاتی انجام نشده است</div>
+                    <button class="btn-clear-history" id="clear-history">پاک کردن تاریخچه</button>
+                </div>
+            </div>
+            
+            <div class="instructions">
+                <h2><i class="fas fa-info-circle"></i> راهنمای استفاده</h2>
+                <ul>
+                    <li>روی دکمه‌های عددی برای وارد کردن اعداد کلیک کنید</li>
+                    <li>از دکمه‌های عملگر برای جمع، تفریق، ضرب و تقسیم استفاده کنید</li>
+                    <li>C: پاک کردن کامل • ←: حذف آخرین رقم • =: نمایش نتیجه</li>
+                    <li>می‌توانید از صفحه کلید هم استفاده کنید</li>
+                    <li>برای آپلود در GitHub: فایل را با نام index.html ذخیره کنید</li>
+                </ul>
+            </div>
+        </main>
+        
+        <footer>
+            <p>ساخته شده با <i class="fas fa-heart" style="color:#e74c3c"></i> | ماشین حساب ساده</p>
+        </footer>
+    </div>
+
+    <script>
+        // دریافت المان‌های مورد نیاز
+        const currentOperandElement = document.getElementById('current-operand');
+        const previousOperandElement = document.getElementById('previous-operand');
+        const historyListElement = document.getElementById('history-list');
+        const clearHistoryButton = document.getElementById('clear-history');
+
+        // متغیرهای ماشین حساب
+        let currentOperand = '0';
+        let previousOperand = '';
+        let operation = null;
+        let resetCurrentOperand = false;
+
+        // تاریخچه عملیات
+        let calculationHistory = [];
+
+        // به روزرسانی نمایشگر
+        function updateDisplay() {
+            currentOperandElement.textContent = currentOperand;
+            
+            if (operation) {
+                previousOperandElement.textContent = `${previousOperand} ${getOperationSymbol(operation)}`;
+            } else {
+                previousOperandElement.textContent = previousOperand;
+            }
+        }
+
+        // دریافت نماد عملگر
+        function getOperationSymbol(op) {
+            switch(op) {
+                case 'add': return '+';
+                case 'subtract': return '−';
+                case 'multiply': return '×';
+                case 'divide': return '÷';
+                default: return '';
+            }
+        }
+
+        // اضافه کردن عدد
+        function appendNumber(number) {
+            if (currentOperand === '0' || resetCurrentOperand) {
+                currentOperand = number;
+                resetCurrentOperand = false;
+            } else {
+                if (number === '.' && currentOperand.includes('.')) return;
+                currentOperand += number;
+            }
+            updateDisplay();
+        }
+
+        // انتخاب عملگر
+        function chooseOperation(op) {
+            if (currentOperand === '') return;
+            
+            if (previousOperand !== '') {
+                calculate();
+            }
+            
+            operation = op;
+            previousOperand = currentOperand;
+            resetCurrentOperand = true;
+            updateDisplay();
+        }
+
+        // محاسبه
+        function calculate() {
+            let result;
+            const prev = parseFloat(previousOperand);
+            const current = parseFloat(currentOperand);
+            
+            if (isNaN(prev) || isNaN(current)) return;
+            
+            switch(operation) {
+                case 'add':
+                    result = prev + current;
+                    break;
+                case 'subtract':
+                    result = prev - current;
+                    break;
+                case 'multiply':
+                    result = prev * current;
+                    break;
+                case 'divide':
+                    if (current === 0) {
+                        alert("تقسیم بر صفر امکان پذیر نیست!");
+                        clear();
+                        return;
+                    }
+                    result = prev / current;
+                    break;
+                default:
+                    return;
+            }
+            
+            // ذخیره در تاریخچه
+            const calculation = {
+                expression: `${previousOperand} ${getOperationSymbol(operation)} ${currentOperand}`,
+                result: result.toString()
+            };
+            
+            calculationHistory.unshift(calculation);
+            if (calculationHistory.length > 8) {
+                calculationHistory.pop();
+            }
+            
+            updateHistoryDisplay();
+            
+            currentOperand = result.toString();
+            operation = null;
+            previousOperand = '';
+            resetCurrentOperand = true;
+            updateDisplay();
+        }
+
+        // پاک کردن
+        function clear() {
+            currentOperand = '0';
+            previousOperand = '';
+            operation = null;
+            updateDisplay();
+        }
+
+        // حذف آخرین رقم
+        function backspace() {
+            if (currentOperand.length > 1) {
+                currentOperand = currentOperand.slice(0, -1);
+            } else {
+                currentOperand = '0';
+            }
+            updateDisplay();
+        }
+
+        // درصد
+        function percentage() {
+            if (currentOperand === '0') return;
+            const value = parseFloat(currentOperand);
+            currentOperand = (value / 100).toString();
+            updateDisplay();
+        }
+
+        // به روزرسانی تاریخچه
+        function updateHistoryDisplay() {
+            historyListElement.innerHTML = '';
+            
+            if (calculationHistory.length === 0) {
+                historyListElement.innerHTML = '<div class="history-item">هیچ عملیاتی انجام نشده است</div>';
+                return;
+            }
+            
+            calculationHistory.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.textContent = `${item.expression} = ${item.result}`;
+                historyListElement.appendChild(historyItem);
+            });
+        }
+
+        // پاک کردن تاریخچه
+        function clearHistory() {
+            calculationHistory = [];
+            updateHistoryDisplay();
+        }
+
+        // کنترل با صفحه کلید
+        function handleKeyboardInput(e) {
+            const key = e.key;
+            
+            if ((key >= '0' && key <= '9') || key === '.') {
+                appendNumber(key);
+            } else if (key === '+') {
+                chooseOperation('add');
+            } else if (key === '-') {
+                chooseOperation('subtract');
+            } else if (key === '*') {
+                chooseOperation('multiply');
+            } else if (key === '/') {
+                e.preventDefault();
+                chooseOperation('divide');
+            } else if (key === 'Enter' || key === '=') {
+                e.preventDefault();
+                calculate();
+            } else if (key === 'Escape' || key === 'Delete') {
+                clear();
+            } else if (key === 'Backspace') {
+                backspace();
+            } else if (key === '%') {
+                percentage();
+            }
+        }
+
+        // رویداد کلیک برای دکمه‌ها
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', () => {
+                if (button.classList.contains('number')) {
+                    const number = button.getAttribute('data-number');
+                    appendNumber(number);
+                }
+                
+                if (button.classList.contains('operator')) {
+                    const action = button.getAttribute('data-action');
+                    
+                    if (action === 'clear') {
+                        clear();
+                    } else if (action === 'backspace') {
+                        backspace();
+                    } else if (action === 'percentage') {
+                        percentage();
+                    } else {
+                        chooseOperation(action);
+                    }
+                }
+                
+                if (button.classList.contains('equals')) {
+                    calculate();
+                }
+            });
+        });
+
+        // رویداد برای پاک کردن تاریخچه
+        clearHistoryButton.addEventListener('click', clearHistory);
+
+        // رویداد صفحه کلید
+        document.addEventListener('keydown', handleKeyboardInput);
+
+        // مقداردهی اولیه
+        updateDisplay();
+        updateHistoryDisplay();
+    </script>
+</body>
+</html>
